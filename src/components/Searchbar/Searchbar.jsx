@@ -7,8 +7,6 @@ import {
   SearchFormInput,
 } from './Searchbar.styled.jsx';
 
-// const { value } = e.currentTarget;
-
 export const Searchbar = ({ onSubmit }) => {
   return (
     <SearchbarContainer>

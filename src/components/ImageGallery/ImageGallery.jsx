@@ -2,19 +2,23 @@ import PropTypes from 'prop-types';
 import { ImageGalleryList } from './ImageGallery.styled.jsx';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 
-export const ImageGallery = () => {
+export const ImageGallery = ({ items }) => {
   return (
     <ImageGalleryList>
-      {xxxx.map(({ xxx }) => {
-        return <ImageGalleryItem src={id} alt={id} />;
+      {items.map(({ id, webformatURL, largeImageURL }) => {
+        return (
+          <ImageGalleryItem
+            key={id}
+            id={id}
+            smallImg={webformatURL}
+            biglImg={largeImageURL}
+          />
+        );
       })}
     </ImageGalleryList>
   );
 };
 
-// Contact.propTypes = {
-//   id: PropTypes.string.isRequired,
-//   name: PropTypes.string.isRequired,
-//   number: PropTypes.string.isRequired,
-//   onDeleteContact: PropTypes.func.isRequired,
-// };
+ImageGallery.propTypes = {
+  items: PropTypes.array.isRequired,
+};
