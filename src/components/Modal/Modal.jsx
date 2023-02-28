@@ -1,19 +1,27 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Overlay, ModalWindow, Image } from './Modal.styled';
 
-export const Modal = ({ xxx }) => {
-  return (
-    <Overlay>
-      <ModalWindow>
-        <Image src="" alt="" />
-      </ModalWindow>
-    </Overlay>
-  );
-};
+export class Modal extends Component {
+  componentDidMount() {
+    window.addEventListener('keydown', this.props.closeModal);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.props.closeModal);
+  }
 
-// Contact.propTypes = {
-//   id: PropTypes.string.isRequired,
-//   name: PropTypes.string.isRequired,
-//   number: PropTypes.string.isRequired,
-//   onDeleteContact: PropTypes.func.isRequired,
-// };
+  render() {
+    return (
+      <Overlay onClick={this.props.closeModal}>
+        <ModalWindow>
+          <Image src={this.props.img} alt="" />
+        </ModalWindow>
+      </Overlay>
+    );
+  }
+}
+
+Modal.propTypes = {
+  img: PropTypes.string.isRequired,
+  closeModal: PropTypes.func.isRequired,
+};

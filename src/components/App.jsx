@@ -14,38 +14,55 @@ export class App extends Component {
     error: false,
   };
 
-  async componentDidUpdate(prevProps, prevState) {
-    if (this.state.query !== prevState.query) {
-      try {
-        this.setState({ isLoading: true });
-        const items = await AxiosApiService(this.state.query, this.state.page);
-        this.setState({ items, isLoading: false });
-      } catch (error) {
-        this.setState({ error: true, isLoading: false });
-        console.log(error);
-      }
+  async componentDidUpdate(_, prevState) {
+    const { query, page } = this.state;
+
+    if (query !== prevState.query) {
+      this.getItems();
     }
 
-    if (this.state.page !== prevState.page) {
-      try {
-        this.setState({ isLoading: true });
-        const items = await AxiosApiService(this.state.query, this.state.page);
-        this.setState({ items, isLoading: false });
-      } catch (error) {
-        this.setState({ error: true, isLoading: false });
-        console.log(error);
-      }
+    if (page !== prevState.page) {
+      this.getItems();
     }
   }
 
+  getItems = async () => {
+    const { query, page, items } = this.state;
+
+    try {
+      this.setState({ isLoading: true });
+      const responseData = await AxiosApiService(query, page);
+
+      const filteredData = responseData.map(item => {
+        const { id, webformatURL, largeImageURL } = item;
+        const itemData = { id, webformatURL, largeImageURL };
+        return itemData;
+      });
+
+      this.setState({
+        items: [...items, ...filteredData],
+        isLoading: false,
+      });
+    } catch (error) {
+      this.setState({ error: true, isLoading: false });
+      console.log(error);
+    }
+  };
+
   handleSubmit = e => {
+    const inputValue = e.target.elements[1].value.trim();
+
     e.preventDefault();
     this.setState({
       page: 1,
-      query: e.target.elements[1].value.trim(),
-      isLoading: true,
+      query: inputValue,
       items: [],
     });
+    if (inputValue !== '') {
+      this.setState({
+        isLoading: true,
+      });
+    }
     e.target.reset();
   };
 
@@ -67,8 +84,8 @@ export class App extends Component {
         }}
       >
         <Searchbar onSubmit={handleSubmit} />
-        {isLoading && <Loader />}
         {items.length > 0 && <ImageGallery items={items} />}
+        {isLoading && <Loader />}
         {items.length > 0 && <Button onClick={loadMore} />}
       </div>
     );
