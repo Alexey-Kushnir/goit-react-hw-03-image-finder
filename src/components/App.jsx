@@ -9,6 +9,7 @@ export class App extends Component {
   state = {
     page: 1,
     query: '',
+    totalHits: 0,
     isLoading: false,
     items: [],
     error: false,
@@ -32,6 +33,9 @@ export class App extends Component {
     try {
       this.setState({ isLoading: true });
       const responseData = await AxiosApiService(query, page);
+      const hits = responseData.length;
+
+      this.setState({ totalHits: hits });
 
       const filteredData = responseData.map(item => {
         const { id, webformatURL, largeImageURL } = item;
@@ -63,7 +67,7 @@ export class App extends Component {
         isLoading: true,
       });
     }
-    e.target.reset();
+    // e.target.reset();
   };
 
   loadMore = () => {
@@ -71,7 +75,7 @@ export class App extends Component {
   };
 
   render() {
-    const { isLoading, items } = this.state;
+    const { isLoading, items, totalHits } = this.state;
     const { handleSubmit, loadMore } = this;
 
     return (
@@ -86,7 +90,9 @@ export class App extends Component {
         <Searchbar onSubmit={handleSubmit} />
         {items.length > 0 && <ImageGallery items={items} />}
         {isLoading && <Loader />}
-        {items.length > 0 && <Button onClick={loadMore} />}
+        {items.length > 0 && totalHits - 11 >= 1 && (
+          <Button onClick={loadMore} />
+        )}
       </div>
     );
   }
