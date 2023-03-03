@@ -73,6 +73,12 @@ export class App extends Component {
       });
     }
 
+    if (inputValue === this.state.query) {
+      this.setState({
+        query: `${inputValue} `,
+      });
+    }
+
     // e.target.reset();
   };
 
