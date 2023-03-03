@@ -5,5 +5,5 @@ export const AxiosApiService = async (query, page) => {
 
   const response = await axios.get(url);
 
-  return response.data.hits;
+  return response.data;
 };

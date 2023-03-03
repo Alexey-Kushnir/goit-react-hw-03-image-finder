@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { AxiosApiService } from './services/services';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 import { Searchbar } from './Searchbar/Searchbar';
 import { Loader } from './Loader/Loader';
 import { ImageGallery } from './ImageGallery/ImageGallery';
@@ -33,11 +35,14 @@ export class App extends Component {
     try {
       this.setState({ isLoading: true });
       const responseData = await AxiosApiService(query, page);
-      const hits = responseData.length;
+      if (responseData.totalHits < 1) {
+        toast('😰 Nothing found!');
+      }
 
+      const hits = responseData.hits.length;
       this.setState({ totalHits: hits });
 
-      const filteredData = responseData.map(item => {
+      const filteredData = responseData.hits.map(item => {
         const { id, webformatURL, largeImageURL } = item;
         const itemData = { id, webformatURL, largeImageURL };
         return itemData;
@@ -54,9 +59,9 @@ export class App extends Component {
   };
 
   handleSubmit = e => {
+    e.preventDefault();
     const inputValue = e.target.elements[1].value.trim();
 
-    e.preventDefault();
     this.setState({
       page: 1,
       query: inputValue,
@@ -67,6 +72,7 @@ export class App extends Component {
         isLoading: true,
       });
     }
+
     // e.target.reset();
   };
 
@@ -88,6 +94,7 @@ export class App extends Component {
         }}
       >
         <Searchbar onSubmit={handleSubmit} />
+        <ToastContainer />
         {items.length > 0 && <ImageGallery items={items} />}
         {isLoading && <Loader />}
         {items.length > 0 && totalHits - 11 >= 1 && (
