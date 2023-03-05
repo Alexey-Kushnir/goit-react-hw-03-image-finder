@@ -4,15 +4,26 @@ import { Overlay, ModalWindow, Image } from './Modal.styled';
 
 export class Modal extends Component {
   componentDidMount() {
-    window.addEventListener('keydown', this.props.closeModal);
+    window.addEventListener('keydown', this.closeModal);
   }
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.props.closeModal);
+    window.removeEventListener('keydown', this.closeModal);
   }
+
+  closeModal = e => {
+    const { closeModal } = this.props;
+
+    if (e.target.nodeName === 'DIV') {
+      closeModal();
+    }
+    if (e.code === 'Escape') {
+      closeModal();
+    }
+  };
 
   render() {
     return (
-      <Overlay onClick={this.props.closeModal}>
+      <Overlay onClick={this.closeModal}>
         <ModalWindow>
           <Image src={this.props.img} alt="" />
         </ModalWindow>

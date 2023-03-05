@@ -9,14 +9,8 @@ export class ImageGalleryItem extends Component {
   };
 
   openModal = () => this.setState({ isModalOpen: true });
-  closeModal = e => {
-    if (e.target.nodeName === 'DIV') {
-      this.setState({ isModalOpen: false });
-    }
-    if (e.code === 'Escape') {
-      this.setState({ isModalOpen: false });
-    }
-  };
+
+  closeModal = () => this.setState({ isModalOpen: false });
 
   render() {
     const { id, smallImg, biglImg } = this.props;

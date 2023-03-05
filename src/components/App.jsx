@@ -20,11 +20,7 @@ export class App extends Component {
   async componentDidUpdate(_, prevState) {
     const { query, page } = this.state;
 
-    if (query !== prevState.query) {
-      this.getItems();
-    }
-
-    if (page !== prevState.page) {
+    if (query !== prevState.query || page !== prevState.page) {
       this.getItems();
     }
   }
@@ -36,7 +32,7 @@ export class App extends Component {
       this.setState({ isLoading: true });
       const responseData = await AxiosApiService(query, page);
       if (responseData.totalHits < 1) {
-        toast('😰 Nothing found!');
+        toast('Nothing found!');
       }
 
       const hits = responseData.hits.length;
@@ -58,19 +54,16 @@ export class App extends Component {
     }
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    const inputValue = e.target.elements[1].value.trim();
-
+  handleSubmit = inputValue => {
     this.setState({
       page: 1,
       query: inputValue,
       items: [],
     });
-    if (inputValue !== '') {
-      this.setState({
-        isLoading: true,
-      });
+
+    if (inputValue === '') {
+      toast('Please enter your search term');
+      return;
     }
 
     if (inputValue === this.state.query) {
@@ -78,8 +71,6 @@ export class App extends Component {
         query: `${inputValue} `,
       });
     }
-
-    // e.target.reset();
   };
 
   loadMore = () => {
