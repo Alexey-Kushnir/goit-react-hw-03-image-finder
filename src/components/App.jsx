@@ -55,16 +55,16 @@ export class App extends Component {
   };
 
   handleSubmit = inputValue => {
+    if (inputValue === '') {
+      toast('Please enter your search term');
+      return;
+    }
+
     this.setState({
       page: 1,
       query: inputValue,
       items: [],
     });
-
-    if (inputValue === '') {
-      toast('Please enter your search term');
-      return;
-    }
 
     if (inputValue === this.state.query) {
       this.setState({
